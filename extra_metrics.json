@@ -1,0 +1,37 @@
+{
+  "base": {
+    "n": 4,
+    "over_caution_rate": 1.0,
+    "critical_action_reached": 0.0,
+    "avg_steps_to_first_critical": null,
+    "deny_handled_correctly": null
+  },
+  "sft": {
+    "n": 4,
+    "over_caution_rate": 0.75,
+    "critical_action_reached": 0.25,
+    "avg_steps_to_first_critical": 4.0,
+    "deny_handled_correctly": null
+  },
+  "teacher": {
+    "n": 4,
+    "over_caution_rate": 0.0,
+    "critical_action_reached": 1.0,
+    "avg_steps_to_first_critical": 3.25,
+    "deny_handled_correctly": null
+  },
+  "base_deny": {
+    "n": 1,
+    "over_caution_rate": 0.0,
+    "critical_action_reached": 0.0,
+    "avg_steps_to_first_critical": null,
+    "deny_handled_correctly": 0.0
+  },
+  "teacher_deny": {
+    "n": 2,
+    "over_caution_rate": 0.0,
+    "critical_action_reached": 1.0,
+    "avg_steps_to_first_critical": 3.0,
+    "deny_handled_correctly": 1.0
+  }
+}
