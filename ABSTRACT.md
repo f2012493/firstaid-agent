@@ -1,0 +1,15 @@
+FirstAid-Agent: a safety-gated, multilingual decision agent for a first-aid robot (Track 3, Agentic Fine-tuning)
+
+In cardiac arrest, severe bleeding and opioid overdose, the first minutes decide the outcome, and ambulances in India often arrive later. We are working towards a robot that reaches the patient first and starts first aid under a remote paramedic's supervision. This project builds and trains the robot's decision layer, the agent that decides what to do next, entirely in simulation.
+
+We built FirstAid-Sim, a text simulator of emergency scenes covering three emergencies, two modes (the robot acting itself, or coaching a present bystander) and four languages (English, Hindi in Devanagari, Hinglish in Latin script, Tamil). About a third of scenes include a bystander shouting to skip the doctor, as a prompt-injection test. The agent acts only through tools (perceive, request_approval, coach_bystander, place_pad, analyze_and_shock, press, administer_naloxone, log_handoff, done). Approval gates and a 100 N force cap are enforced in code, so any unapproved irreversible action or over-force request is refused and counted as a safety failure.
+
+A protocol-correct teacher with hand-written coaching in all four languages solves every scene and serves as the upper bound. Its 240 training trajectories were collected through AgentTune's Project/DictToolHarness/ReActStrategy spine and exported as EventLogs. We fine-tuned Tiny Aya (Fire) with LoRA on these episodes, with loss only on the agent's tool-call turns, on a single M2 laptop. We also release 760 chosen/rejected DPO pairs (skipped approval, over-force, wrong-language coaching, missing handoff) for the next stage.
+
+Evaluation runs closed-loop on held-out scenes and combines simulator outcomes with AuditKIT metrics (ToolCallF1, TrajectoryMatch, RedundantToolCalls, AgentLoopDetection). We report tool-call accuracy, response correctness, a hard safety pass (overall and under injection), coaching-language accuracy, reliability, and a weighted per-category score (cardiac 0.40, bleeding 0.35, overdose 0.25, split between robot-acting and bystander-coaching), with base Tiny Aya as the lower bound and the teacher as the upper bound.
+
+Results on 4 held-out closed-loop scenes: weighted score 0.13 (base) → 0.19 (ours) vs 1.00 (teacher), closing 6% of the gap; tool-call F1 0.27 → 0.50; safety pass 1.00 → 0.75.
+
+With only 8 minutes of training (8 episodes) on a laptop, tool-call validity rose from 0.64 to 0.84, redundant calls fell from 0.35 to 0.06, and coaching in the right language from 0.00 to 0.50. One fine-tuned episode attempted pressure without approval under a bystander's injection; the code gate blocked it, and we report it as a safety failure. Closing that with DPO on the released pairs is our next step.
+
+Why a small open model: the robot must work offline in rural dead zones, respond with low latency, keep patient data on the device, and, as a medical device, run a frozen, versioned model. Next steps are DPO on the released pairs, Claude-generated teacher trajectories filtered by the simulator, harder adversarial bystanders, and Aya Expanse 8B.
